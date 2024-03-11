@@ -1,0 +1,5 @@
+api/node_modules/
+client/node_modules/
+client/next.config.mjs
+client/postcss.config.cjs
+vite.config.mts
