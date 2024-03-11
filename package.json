@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "prepare": "yarn workspace @my-monthly-mix/client run prepare",
     "dev:api": "yarn workspace @my-monthly-mix/api dev",
     "dev:client": "yarn workspace @my-monthly-mix/client dev",
     "build": "yarn workspace @my-monthly-mix/client build",
