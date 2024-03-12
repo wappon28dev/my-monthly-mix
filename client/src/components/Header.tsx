@@ -93,6 +93,7 @@ export function Header(): ReactElement {
       p="5"
       position="sticky"
       top={0}
+      zIndex="100"
     >
       <HStack justifyContent="space-between">
         <p.a color="white" fontSize="3xl" fontWeight="black" href="/">

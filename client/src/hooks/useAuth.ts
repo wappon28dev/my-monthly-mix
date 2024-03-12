@@ -29,6 +29,9 @@ export function useAuth() {
   const signIn = async (): Promise<void> => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: window.location.href,
+      },
     });
     console.warn(error);
   };
