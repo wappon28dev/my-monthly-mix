@@ -232,6 +232,11 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
+"@fontsource-variable/m-plus-1@^5.0.16":
+  version "5.0.16"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/m-plus-1/-/m-plus-1-5.0.16.tgz#b1e556ccdb1986b6b56249ce2af02f8fdcfe5126"
+  integrity sha512-ikIhU6z7BEW3/4NzP/mA5s3+qfiV4XPoq8khKETm53LrTZoJb+39X+UnLBBS91XwmtJqRVRU3DtAdx6OnsCing==
+
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"

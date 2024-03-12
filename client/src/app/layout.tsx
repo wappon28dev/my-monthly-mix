@@ -1,17 +1,12 @@
 import { type ReactElement } from "react";
 import { styled as p } from "panda/jsx";
 import { MantineProvider, createTheme } from "@mantine/core";
-import { M_PLUS_1 } from "next/font/google";
 import { siteName, description, url } from "@/lib/info";
 
 import "@mantine/core/styles.css";
+import "@fontsource-variable/m-plus-1";
 import "./global.css";
 import { Header } from "@/components/Header";
-
-const font = M_PLUS_1({
-  weight: ["400", "500", "700", "900"],
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: {
@@ -49,6 +44,7 @@ const theme = createTheme({
   },
   primaryColor: "purple",
   primaryShade: 6,
+  fontFamily: "'M PLUS 1 Variable', sans-serif",
 });
 
 export default function RootLayout({
@@ -59,7 +55,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <p.body
-        className={font.className}
         display="grid"
         gridTemplateColumns="100%"
         gridTemplateRows="auto 1fr auto"
