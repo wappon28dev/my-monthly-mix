@@ -29,7 +29,7 @@ export default function Page(): ReactElement {
       <Button
         leftSection={<Icon icon="mdi:creation" />}
         onClick={() => {
-          throw new Error("not implemented yet");
+          // throw new Error("not implemented yet");
         }}
         size="xl"
         variant="filled"

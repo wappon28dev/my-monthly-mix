@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { type Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import supabase from "@/lib/service/supabse";
+import supabase from "@/lib/service/supabase";
 import { type UserMetadata } from "@/types/user";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
