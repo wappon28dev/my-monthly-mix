@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { type Session } from "@supabase/supabase-js";
 import { v4 as uuidV4 } from "uuid";
 import supabase from "@/lib/service/supabase";

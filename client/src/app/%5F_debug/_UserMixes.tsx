@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Button, Code, Input, TextInput } from "@mantine/core";
+import { Button, Code, TextInput } from "@mantine/core";
 import { VStack, HStack, styled as p } from "panda/jsx";
 import { type ReactElement, useState, useMemo, useEffect } from "react";
 import { validate } from "uuid";
@@ -216,7 +216,6 @@ export function UserMixes(): ReactElement {
                     [key]: val,
                   }));
                 }}
-                // @ts-expect-error: key
                 value={mix[key]}
                 w="100%"
               />

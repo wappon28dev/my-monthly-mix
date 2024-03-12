@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { type HonoType } from "lib/consts";
-import { contact } from "./contact";
 
 export const v1 = new Hono<HonoType>()
   .use("/*", async (ctx, next) => {
@@ -9,4 +8,4 @@ export const v1 = new Hono<HonoType>()
     });
     await next();
   })
-  .route("/contact", contact);
+  .get("/", (ctx) => ctx.text("Hello World!"));
