@@ -6,6 +6,7 @@ import { siteName, description, url } from "@/lib/info";
 
 import "@mantine/core/styles.css";
 import "./global.css";
+import { Header } from "@/components/Header";
 
 const font = M_PLUS_1({
   weight: ["400", "500", "700", "900"],
@@ -34,19 +35,20 @@ export const metadata = {
 const theme = createTheme({
   colors: {
     purple: [
-      "#f6ecff",
-      "#e7d6fb",
-      "#caabf1",
-      "#ac7ce8",
-      "#9354e0",
-      "#833cdb",
-      "#7b2eda",
-      "#6921c2",
-      "#5d1cae",
-      "#501599",
+      "#faf5ff",
+      "#f3e8ff",
+      "#e9d5ff",
+      "#d8b4fe",
+      "#c084fc",
+      "#a855f7",
+      "#9333ea",
+      "#7e22ce",
+      "#6b21a8",
+      "#581c87",
     ],
   },
   primaryColor: "purple",
+  primaryShade: 6,
 });
 
 export default function RootLayout({
@@ -56,12 +58,21 @@ export default function RootLayout({
 }): ReactElement {
   return (
     <html lang="ja">
-      <p.body h={["100vh", "100dvh"]} wordBreak="keep-all">
-        <p.main className={font.className} h="100%" w="100%">
-          <MantineProvider defaultColorScheme="dark" theme={theme}>
+      <p.body
+        className={font.className}
+        display="grid"
+        gridTemplateColumns="100%"
+        gridTemplateRows="auto 1fr auto"
+        h="100%"
+        minHeight="100vh"
+        w="100%"
+      >
+        <MantineProvider defaultColorScheme="dark" theme={theme}>
+          <Header />
+          <p.main h="100%" w="100%">
             {children}
-          </MantineProvider>
-        </p.main>
+          </p.main>
+        </MantineProvider>
       </p.body>
     </html>
   );
