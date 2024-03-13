@@ -33,7 +33,7 @@ export function UserMixes(): ReactElement {
       <p.div
         border="1px solid white"
         display="grid"
-        h="100%"
+        h="500px"
         placeItems="center"
         w="100%"
       >

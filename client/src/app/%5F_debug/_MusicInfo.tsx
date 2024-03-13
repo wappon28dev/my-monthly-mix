@@ -3,8 +3,11 @@
 import { TextInput } from "@mantine/core";
 import { VStack, styled as p } from "panda/jsx";
 import { type ReactElement, useState, useMemo } from "react";
+import ReactPlayer from "react-player";
 import { Spotify } from "react-spotify-embed";
 import { detectSongKind } from "@/lib/detect-song.ts";
+
+import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 
 export function MusicInfo(): ReactElement {
   const [loading, setLoading] = useState<"info">();
@@ -13,10 +16,13 @@ export function MusicInfo(): ReactElement {
 
   function Preview(): ReactElement {
     switch (songKind) {
-      case "spotify":
-        return <Spotify link={musicUrl} />;
       case "blank":
         return <p.div>Enter URL to show preview</p.div>;
+      case "youtube":
+      case "soundcloud":
+        return <ReactPlayer url={musicUrl} />;
+      case "spotify":
+        return <Spotify link={musicUrl} />;
       default:
         return <p.div>Currently not supported</p.div>;
     }
@@ -28,6 +34,7 @@ export function MusicInfo(): ReactElement {
       border="1px solid"
       borderColor="white"
       gap="3"
+      minH="500px"
       p="3"
     >
       <p.h2 fontSize="2xl" fontWeight="bold">
@@ -50,8 +57,9 @@ export function MusicInfo(): ReactElement {
               value={musicUrl}
               w="100%"
             />
+            <p.h3>Song Type</p.h3>
+            <p.code>{songKind}</p.code>
           </VStack>
-          <p.h3>Metadata</p.h3>
         </p.div>
         <p.div w="100%">
           <VStack alignItems="start" w="100%">
