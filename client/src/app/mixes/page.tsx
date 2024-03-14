@@ -8,7 +8,6 @@ import {
   Image,
   Text,
   CloseButton,
-  Group,
   Center,
   TextInput,
   Grid,
@@ -71,8 +70,8 @@ function NotSelectedSong({
   );
 }
 
-function SelectedSong(props: SongData): ReactElement {
-  const songData = props;
+function SelectedSong(songData: SongData): ReactElement {
+  const { title, description, url } = songData;
   return (
     <Card m={10} maw={800} padding="xs" radius="md" shadow="sm" withBorder>
       <Grid>
@@ -89,17 +88,17 @@ function SelectedSong(props: SongData): ReactElement {
             <Grid.Col span={8}>
               <Grid>
                 <Grid.Col span={4}>
-                  <Text fw={500}>{songData.title}</Text>
+                  <Text fw={500}>{title}</Text>
                 </Grid.Col>
                 <Grid.Col offset={3} span={4}>
                   <Badge>音楽サービス名</Badge>
                 </Grid.Col>
               </Grid>
               <Text fw={500} size="sm">
-                {songData.description}
+                {description}
               </Text>
               <Text component="div" fw={500} lineClamp={1} size="xs">
-                <p>{songData.url}</p>
+                <p>{url}</p>
               </Text>
               <TextInput placeholder="comment" />
             </Grid.Col>
@@ -139,8 +138,8 @@ export default function Page(): ReactElement {
     <p.main m="3">
       <Center>
         <ScrollArea.Autosize mah={600} mih={300} scrollbars="y">
-          {/* eslint-disable-next-line react/no-array-index-key */}
           {mix.map((songData, i) => (
+            /* eslint-disable-next-line react/no-array-index-key */
             <SelectedSong key={i} {...songData} />
           ))}
           <NotSelectedSong handlerSetMix={handlerSetMix} />

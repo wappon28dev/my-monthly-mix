@@ -1,16 +1,27 @@
 "use client";
 
 import { TextInput } from "@mantine/core";
-import { VStack, styled as p } from "panda/jsx";
-import { type ReactElement, useState, useMemo } from "react";
+import { HStack, VStack, styled as p } from "panda/jsx";
+import { type ReactElement, useState, useMemo, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { Spotify } from "react-spotify-embed";
 import { detectSongKind } from "@/lib/detect-song.ts";
+import { useSongData } from "@/hooks/useSongData";
 
-export function MusicInfo(): ReactElement {
+export function SongInfo(): ReactElement {
   const [loading, setLoading] = useState<"info">();
   const [musicUrl, setMusicUrl] = useState("");
+  const songData = useSongData();
   const songKind = useMemo(() => detectSongKind(musicUrl), [musicUrl]);
+
+  useEffect(() => {
+    void (async () => {
+      if (songKind === "youtube") {
+        const data = await songData.fetch(songKind, musicUrl);
+        console.log(data);
+      }
+    })();
+  }, [musicUrl, songData, songKind]);
 
   function Preview(): ReactElement {
     switch (songKind) {
@@ -36,7 +47,7 @@ export function MusicInfo(): ReactElement {
       p="3"
     >
       <p.h2 fontSize="2xl" fontWeight="bold">
-        Music Info
+        Song Info
       </p.h2>
       <p.div
         display="grid"
@@ -57,6 +68,24 @@ export function MusicInfo(): ReactElement {
             />
             <p.h3>Song Type</p.h3>
             <p.code>{songKind}</p.code>
+            <p.h3>Song Info</p.h3>
+            <HStack w="100%">
+              <p.div>
+                <p.img
+                  alt=""
+                  height={120}
+                  rounded="lg"
+                  src="http://placehold.jp/120x120.png"
+                  width={120}
+                />
+              </p.div>
+
+              <VStack>
+                <p.p fontSize="2xl" fontWeight="bold">
+                  Title
+                </p.p>
+              </VStack>
+            </HStack>
           </VStack>
         </p.div>
         <p.div w="100%">

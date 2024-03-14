@@ -4,7 +4,7 @@ import { type ReactElement } from "react";
 import { VStack, styled as p } from "panda/jsx";
 import { UserInfo } from "./_UserInfo";
 import { UserMixes } from "./_UserMixes";
-import { MusicInfo } from "./_MusicInfo";
+import { SongInfo } from "./_SongInfo";
 
 export default function Page(): ReactElement {
   return (
@@ -23,7 +23,7 @@ export default function Page(): ReactElement {
         </p.h1>
         <UserInfo />
         <UserMixes />
-        <MusicInfo />
+        <SongInfo />
       </VStack>
     </p.div>
   );
