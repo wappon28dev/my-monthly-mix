@@ -3,7 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
   "/connect": {
     /**
@@ -33,7 +32,10 @@ export interface paths {
     post: {
       requestBody?: {
         content: {
-          "application/x-www-form-urlencoded": components["schemas"]["AuthorizationCode"] | components["schemas"]["RefreshToken"] | components["schemas"]["Password"];
+          "application/x-www-form-urlencoded":
+            | components["schemas"]["AuthorizationCode"]
+            | components["schemas"]["RefreshToken"]
+            | components["schemas"]["Password"];
         };
       };
       responses: {
@@ -1152,7 +1154,15 @@ export interface components {
          * @description Possible values: no-rights-reserved, all-rights-reserved, cc-by, cc-by-nc, cc-by-nd, cc-by-sa, cc-by-nc-nd, cc-by-nc-sa
          * @enum {string}
          */
-        license?: "no-rights-reserved" | "all-rights-reserved" | "cc-by" | "cc-by-nc" | "cc-by-nd" | "cc-by-sa" | "cc-by-nc-nd" | "cc-by-nc-sa";
+        license?:
+          | "no-rights-reserved"
+          | "all-rights-reserved"
+          | "cc-by"
+          | "cc-by-nc"
+          | "cc-by-nd"
+          | "cc-by-sa"
+          | "cc-by-nc-nd"
+          | "cc-by-nc-sa";
         /** @default true */
         commentable?: boolean;
         isrc?: string;
@@ -1171,9 +1181,9 @@ export interface components {
         sharing?: "public" | "private";
         /** @description List of tracks to add to playlist */
         tracks?: {
-            /** @description SoundCloud track id */
-            id: string;
-          }[];
+          /** @description SoundCloud track id */
+          id: string;
+        }[];
       };
     };
     TrackDataRequest: {
@@ -1214,7 +1224,15 @@ export interface components {
        * @description Possible values: no-rights-reserved, all-rights-reserved, cc-by, cc-by-nc, cc-by-nd, cc-by-sa, cc-by-nc-nd, cc-by-nc-sa
        * @enum {string}
        */
-      "track[license]"?: "no-rights-reserved" | "all-rights-reserved" | "cc-by" | "cc-by-nc" | "cc-by-nd" | "cc-by-sa" | "cc-by-nc-nd" | "cc-by-nc-sa";
+      "track[license]"?:
+        | "no-rights-reserved"
+        | "all-rights-reserved"
+        | "cc-by"
+        | "cc-by-nc"
+        | "cc-by-nd"
+        | "cc-by-sa"
+        | "cc-by-nc-nd"
+        | "cc-by-nc-sa";
       /** @default true */
       "track[commentable]"?: boolean;
       "track[isrc]"?: string;
@@ -1423,68 +1441,68 @@ export interface components {
     };
     /** @deprecated */
     UsersList: {
-        /** @description URL to a JPEG image */
-        avatar_url?: string;
-        /** @description city */
-        city?: string;
-        /** @description country */
-        country?: string;
-        /** @description description */
-        description?: string;
-        /** @description discogs name */
-        discogs_name?: string;
-        /** @description first name */
-        first_name?: string;
-        /** @description number of followers */
-        followers_count?: number;
-        /** @description number of followed users */
-        followings_count?: number;
-        /** @description first and last name */
-        full_name?: string;
-        /** @description unique identifier */
-        id?: number;
-        /** @description kind of resource */
-        kind?: string;
-        /**
-         * Format: date-time
-         * @description last modified datetime
-         */
-        last_modified?: string;
-        /** @description last name */
-        last_name?: string;
-        /**
-         * @deprecated
-         * @description myspace name
-         */
-        myspace_name?: string;
-        /** @description permalink of the resource */
-        permalink?: string;
-        /** @description URL to the SoundCloud.com page */
-        permalink_url?: string;
-        /** @description subscription plan of the user */
-        plan?: string;
-        /** @description number of public playlists */
-        playlist_count?: number;
-        /** @description number of favorited public tracks */
-        public_favorites_count?: number;
-        /** @description number of reposts from user */
-        reposts_count?: number;
-        /** @description number of public tracks */
-        track_count?: number;
-        /** @description API resource URL */
-        uri?: string;
-        /** @description username */
-        username?: string;
-        /** @description a URL to the website */
-        website?: string;
-        /** @description a custom title for the website */
-        website_title?: string;
-        /**
-         * @deprecated
-         * @description a list subscriptions associated with the user
-         */
-        subscriptions?: unknown;
-      }[];
+      /** @description URL to a JPEG image */
+      avatar_url?: string;
+      /** @description city */
+      city?: string;
+      /** @description country */
+      country?: string;
+      /** @description description */
+      description?: string;
+      /** @description discogs name */
+      discogs_name?: string;
+      /** @description first name */
+      first_name?: string;
+      /** @description number of followers */
+      followers_count?: number;
+      /** @description number of followed users */
+      followings_count?: number;
+      /** @description first and last name */
+      full_name?: string;
+      /** @description unique identifier */
+      id?: number;
+      /** @description kind of resource */
+      kind?: string;
+      /**
+       * Format: date-time
+       * @description last modified datetime
+       */
+      last_modified?: string;
+      /** @description last name */
+      last_name?: string;
+      /**
+       * @deprecated
+       * @description myspace name
+       */
+      myspace_name?: string;
+      /** @description permalink of the resource */
+      permalink?: string;
+      /** @description URL to the SoundCloud.com page */
+      permalink_url?: string;
+      /** @description subscription plan of the user */
+      plan?: string;
+      /** @description number of public playlists */
+      playlist_count?: number;
+      /** @description number of favorited public tracks */
+      public_favorites_count?: number;
+      /** @description number of reposts from user */
+      reposts_count?: number;
+      /** @description number of public tracks */
+      track_count?: number;
+      /** @description API resource URL */
+      uri?: string;
+      /** @description username */
+      username?: string;
+      /** @description a URL to the website */
+      website?: string;
+      /** @description a custom title for the website */
+      website_title?: string;
+      /**
+       * @deprecated
+       * @description a list subscriptions associated with the user
+       */
+      subscriptions?: unknown;
+    }[];
     /** @description Soundcloud Track object. */
     Track: {
       /** @description Track title. */
@@ -1669,34 +1687,36 @@ export interface components {
     PlaylistsArray: components["schemas"]["Playlist"][];
     /** @description User's activities. */
     Activities: {
-      collection?: ({
-          /** @description Type of activity (track). */
-          type?: string;
-          /** @description Created timestamp. */
-          created_at?: string;
-          /** @description Origin. */
-          origin?: components["schemas"]["Track"] | components["schemas"]["Playlist"];
-        })[];
+      collection?: {
+        /** @description Type of activity (track). */
+        type?: string;
+        /** @description Created timestamp. */
+        created_at?: string;
+        /** @description Origin. */
+        origin?:
+          | components["schemas"]["Track"]
+          | components["schemas"]["Playlist"];
+      }[];
       next_href?: string;
       future_href?: string;
     };
     /** @description User's links added to their profile */
     WebProfiles: {
-        /** @description Timestamp of when the link was added to the profile. */
-        created_at?: string;
-        /** @description Id */
-        id?: number;
-        /** @description Kind */
-        kind?: string;
-        /** @description Service or platform */
-        service?: string;
-        /** @description Link's title */
-        title?: string;
-        /** @description URL of the external link */
-        url?: string;
-        /** @description Username extracted from the external link */
-        username?: string;
-      }[];
+      /** @description Timestamp of when the link was added to the profile. */
+      created_at?: string;
+      /** @description Id */
+      id?: number;
+      /** @description Kind */
+      kind?: string;
+      /** @description Service or platform */
+      service?: string;
+      /** @description Link's title */
+      title?: string;
+      /** @description URL of the external link */
+      url?: string;
+      /** @description Username extracted from the external link */
+      username?: string;
+    }[];
     /** @description User's Comment */
     Comment: {
       /** @description Comment body. */
@@ -1860,7 +1880,9 @@ export interface components {
     /** @description Success */
     Users: {
       content: {
-        "application/json; charset=utf-8": components["schemas"]["Users"] | components["schemas"]["UsersList"];
+        "application/json; charset=utf-8":
+          | components["schemas"]["Users"]
+          | components["schemas"]["UsersList"];
       };
     };
     /** @description Success */
@@ -1884,7 +1906,9 @@ export interface components {
     /** @description Success */
     Tracks: {
       content: {
-        "application/json; charset=utf-8": components["schemas"]["Tracks"] | components["schemas"]["TracksList"];
+        "application/json; charset=utf-8":
+          | components["schemas"]["Tracks"]
+          | components["schemas"]["TracksList"];
       };
     };
     /** @description Success */
@@ -1961,82 +1985,82 @@ export interface components {
           track_count?: number;
           /** @description List of tracks. */
           tracks?: {
-              /** @description Track title. */
-              title?: string;
-              /** @description URL to a JPEG image. */
-              artwork_url?: string;
-              /** @description Tempo. */
-              bpm?: number;
-              /** @description Number of comments. */
-              comment_count?: number;
-              /** @description Is commentable. */
-              commentable?: boolean;
-              /** @description Created timestamp. */
-              created_at?: string;
-              /** @description Track description. */
-              description?: string;
-              /** @description NUmber of downloads. */
-              download_count?: number;
-              /** @description Is downloadable. */
-              downloadable?: string;
-              /** @description Track duration. */
-              duration?: number;
-              /**
-               * @deprecated
-               * @description Embeddable by.
-               */
-              embeddable_by?: string;
-              /** @description Number of favoritings. */
-              favoritings_count?: number;
-              /** @description Genre */
-              genre?: string;
-              /** @description Track identifier. */
-              id?: number;
-              /** @description ISRC code. */
-              isrc?: string;
-              /** @description Key signature. */
-              key_signature?: string;
-              /** @description Type of object (track). */
-              kind?: string;
-              /** @description Label user name. */
-              label_name?: string;
-              /** @description License */
-              license?: string;
-              /** @description Permalink URL. */
-              permalink_url?: string;
-              /** @description Number of plays. */
-              playback_count?: number;
-              /** @description Purchase title. */
-              purchase_title?: string;
-              /** @description Purchase URL. */
-              purchase_url?: string;
-              /** @description Release. */
-              release?: string;
-              /** @description Day of release. */
-              release_day?: number;
-              /** @description Month of release. */
-              release_month?: number;
-              /** @description Year of release. */
-              release_year?: number;
-              /** @description Type of sharing (public/private). */
-              sharing?: string;
-              /** @description URL to stream. */
-              stream_url?: string;
-              /** @description Is streamable. */
-              streamable?: boolean;
-              /** @description Tags. */
-              tag_list?: string;
-              /** @description Track URI. */
-              uri?: string;
-              /** @description User who uploaded a track */
-              user?: components["schemas"]["MetaUser"];
-              /** @description Is user's favourite. */
-              user_favorite?: boolean;
-              /** @description Number of plays by a user. */
-              user_playback_count?: number;
-              /** @description Waveform URL. */
-              waveform_url?: string;
-            }[];
+            /** @description Track title. */
+            title?: string;
+            /** @description URL to a JPEG image. */
+            artwork_url?: string;
+            /** @description Tempo. */
+            bpm?: number;
+            /** @description Number of comments. */
+            comment_count?: number;
+            /** @description Is commentable. */
+            commentable?: boolean;
+            /** @description Created timestamp. */
+            created_at?: string;
+            /** @description Track description. */
+            description?: string;
+            /** @description NUmber of downloads. */
+            download_count?: number;
+            /** @description Is downloadable. */
+            downloadable?: string;
+            /** @description Track duration. */
+            duration?: number;
+            /**
+             * @deprecated
+             * @description Embeddable by.
+             */
+            embeddable_by?: string;
+            /** @description Number of favoritings. */
+            favoritings_count?: number;
+            /** @description Genre */
+            genre?: string;
+            /** @description Track identifier. */
+            id?: number;
+            /** @description ISRC code. */
+            isrc?: string;
+            /** @description Key signature. */
+            key_signature?: string;
+            /** @description Type of object (track). */
+            kind?: string;
+            /** @description Label user name. */
+            label_name?: string;
+            /** @description License */
+            license?: string;
+            /** @description Permalink URL. */
+            permalink_url?: string;
+            /** @description Number of plays. */
+            playback_count?: number;
+            /** @description Purchase title. */
+            purchase_title?: string;
+            /** @description Purchase URL. */
+            purchase_url?: string;
+            /** @description Release. */
+            release?: string;
+            /** @description Day of release. */
+            release_day?: number;
+            /** @description Month of release. */
+            release_month?: number;
+            /** @description Year of release. */
+            release_year?: number;
+            /** @description Type of sharing (public/private). */
+            sharing?: string;
+            /** @description URL to stream. */
+            stream_url?: string;
+            /** @description Is streamable. */
+            streamable?: boolean;
+            /** @description Tags. */
+            tag_list?: string;
+            /** @description Track URI. */
+            uri?: string;
+            /** @description User who uploaded a track */
+            user?: components["schemas"]["MetaUser"];
+            /** @description Is user's favourite. */
+            user_favorite?: boolean;
+            /** @description Number of plays by a user. */
+            user_playback_count?: number;
+            /** @description Waveform URL. */
+            waveform_url?: string;
+          }[];
           /** @description Playlist type. */
           type?: string;
           /** @description Playlist URI. */
@@ -2050,7 +2074,9 @@ export interface components {
     /** @description Success */
     Playlists: {
       content: {
-        "application/json; charset=utf-8": components["schemas"]["Playlists"] | components["schemas"]["PlaylistsArray"];
+        "application/json; charset=utf-8":
+          | components["schemas"]["Playlists"]
+          | components["schemas"]["PlaylistsArray"];
       };
     };
     /** @description Success */
@@ -2080,7 +2106,9 @@ export interface components {
     /** @description Success */
     Comments: {
       content: {
-        "application/json; charset=utf-8": components["schemas"]["Comments"] | components["schemas"]["CommentsList"];
+        "application/json; charset=utf-8":
+          | components["schemas"]["Comments"]
+          | components["schemas"]["CommentsList"];
       };
     };
     /** @description Success */

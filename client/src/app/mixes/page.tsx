@@ -2,165 +2,150 @@
 
 import { styled as p } from "panda/jsx";
 import { useState, type ReactElement } from "react";
-import { Button, Card, Image, Text, CloseButton, Group, TextInput, Grid, Divider, ScrollArea } from "@mantine/core";
+import {
+  Button,
+  Card,
+  Image,
+  Text,
+  CloseButton,
+  Group,
+  Center,
+  TextInput,
+  Grid,
+  Divider,
+  ScrollArea,
+  Badge,
+} from "@mantine/core";
 
 type SongData = {
-  title: string,
-  image: string,
-  description: string,
-  url: string,
-  comment: string
-}
+  title: string;
+  image: string;
+  description: string;
+  url: string;
+  comment: string;
+};
 
-function SongCard(): ReactElement {
+function NotSelectedSong({
+  handlerSetMix,
+}: {
+  handlerSetMix: (songData: SongData) => void;
+}): ReactElement {
+  const [url, setUrl] = useState<string>();
   return (
-    <Card padding="xs" radius="md" shadow="sm" withBorder>
-      <Card.Section>
-        <Image
-          height={160}
-          src="http://placehold.jp/50x50.png"
-        />
-      </Card.Section>
-
-      <Group justify="space-between" mt="xs">
-        <Text fw={500}>タイトル</Text>
-      </Group>
-
-      <Text size="xs">
-        コンポスター
-      </Text>
-
-      <Button
-        fullWidth mt="xs" onClick={() => {
-          // mixにこの曲を追加
-        }} radius="md">
-        追加
-      </Button>
+    <Card maw={800} padding="xs" radius="md" shadow="sm" withBorder>
+      <Grid>
+        <Grid.Col span={4}>
+          <Image
+            mah={100}
+            maw={100}
+            radius="md"
+            src="http://placehold.jp/50x50.png"
+          />
+        </Grid.Col>
+        <Grid.Col span={8}>
+          <Text fw={500}>{url ?? "text"}</Text>
+          <TextInput
+            onChange={(event) => {
+              setUrl(event.currentTarget.value);
+            }}
+            placeholder="URL..."
+            value={url ?? ""}
+          />
+          <Button
+            onClick={() => {
+              handlerSetMix({
+                title: "title",
+                image: "image",
+                description: "description3",
+                url: url ?? "url",
+                comment: "comment",
+              });
+              setUrl(undefined);
+            }}
+          >
+            Add
+          </Button>
+        </Grid.Col>
+      </Grid>
     </Card>
-  )
+  );
 }
 
-function SelectSong({ ...songData }: SongData): ReactElement {
+function SelectedSong(props: SongData): ReactElement {
+  const songData = props;
   return (
-    <Group justify="between-space">
-      <Card maw={500} padding="xs" radius="md" shadow="sm" withBorder>
-        <Grid>
-          <Grid.Col span={4}>
-            <Image mah={100} maw={100} radius="md"
-              src="http://placehold.jp/50x50.png" />
-          </Grid.Col>
-          <Grid.Col span={8}>
-            <Text fw={500}>{songData.title}</Text>
-            <Text fw={500}>{songData.description}</Text>
-
-            <TextInput placeholder="comment" />
-          </Grid.Col>
-        </Grid>
-      </Card>
-      <CloseButton />
-    </Group>
-  )
+    <Card m={10} maw={800} padding="xs" radius="md" shadow="sm" withBorder>
+      <Grid>
+        <Grid.Col span={11}>
+          <Grid>
+            <Grid.Col span={4}>
+              <Image
+                mah={100}
+                maw={100}
+                radius="md"
+                src="http://placehold.jp/50x50.png"
+              />
+            </Grid.Col>
+            <Grid.Col span={8}>
+              <Grid>
+                <Grid.Col span={4}>
+                  <Text fw={500}>{songData.title}</Text>
+                </Grid.Col>
+                <Grid.Col offset={3} span={4}>
+                  <Badge>音楽サービス名</Badge>
+                </Grid.Col>
+              </Grid>
+              <Text fw={500} size="sm">
+                {songData.description}
+              </Text>
+              <Text component="div" fw={500} lineClamp={1} size="xs">
+                <p>{songData.url}</p>
+              </Text>
+              <TextInput placeholder="comment" />
+            </Grid.Col>
+          </Grid>
+        </Grid.Col>
+        <Grid.Col span={1}>
+          <CloseButton />
+        </Grid.Col>
+      </Grid>
+    </Card>
+  );
 }
 
 export default function Page(): ReactElement {
-  // リアクティブな値
-  const [mix, setMix] = useState<SongData[]>([{
-    title: "title1",
-    image: "image",
-    description: "description1",
-    url: "url",
-    comment: "comment"
-  },
-  {
-    title: "title2",
-    image: "image",
-    description: "description2",
-    url: "url",
-    comment: "comment"
-  },
-  {
-    title: "title3",
-    image: "image",
-    description: "description3",
-    url: "url",
-    comment: "comment"
-  }
-  ])
+  const [mix, setMix] = useState<SongData[]>([
+    {
+      title: "title1",
+      image: "image",
+      description: "description1",
+      url: "url1",
+      comment: "comment",
+    },
+    {
+      title: "title2",
+      image: "image",
+      description: "description2",
+      url: "url2",
+      comment: "comment",
+    },
+  ]);
+
+  const handlerSetMix = (newSong: SongData): void => {
+    setMix([...mix, newSong]);
+  };
 
   return (
-    <p.main
-      m="3"
-    >
-      {/* <Tabs defaultValue="SoundCloud"
-        >
-          <Tabs.Panel value="SoundCloud">
-            <ScrollArea.Autosize mah={800} mih={300} scrollbars="y">
-              <Grid>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 4 }}>
-                  <SongCard />
-                </Grid.Col>
-              </Grid>
-            </ScrollArea.Autosize>
-          </Tabs.Panel>
-          <Tabs.Panel value="YouTube Music">
-            YouTube Music tab content
-          </Tabs.Panel>
-          <Tabs.Panel value="Spotify">
-            Spotify tab content
-          </Tabs.Panel>
-          <Tabs.List grow>
-            <Tabs.Tab value="SoundCloud">
-              SoundCloud
-            </Tabs.Tab>
-            <Tabs.Tab value="YouTube Music" >
-              YouTube Music
-            </Tabs.Tab>
-            <Tabs.Tab value="Spotify">
-              Spotify
-            </Tabs.Tab>
-          </Tabs.List>
-        </Tabs> */}
-
-      <ScrollArea.Autosize mah={600} mih={300} scrollbars="y">
-        <Grid grow>
-          <Grid.Col span={12}>
-            <SelectSong {...mix[0]} />
-          </Grid.Col>
-          <Grid.Col span={12}>
-            <SelectSong {...mix[1]} />
-          </Grid.Col>
-          <Grid.Col span={12}>
-            <SelectSong {...mix[2]} />
-          </Grid.Col>1
-        </Grid>
-      </ScrollArea.Autosize>
+    <p.main m="3">
+      <Center>
+        <ScrollArea.Autosize mah={600} mih={300} scrollbars="y">
+          {/* eslint-disable-next-line react/no-array-index-key */}
+          {mix.map((songData, i) => (
+            <SelectedSong key={i} {...songData} />
+          ))}
+          <NotSelectedSong handlerSetMix={handlerSetMix} />
+        </ScrollArea.Autosize>
+      </Center>
       <Divider my="md" />
       <Button
         fullWidth
@@ -172,5 +157,5 @@ export default function Page(): ReactElement {
         Share
       </Button>
     </p.main>
-  )
+  );
 }

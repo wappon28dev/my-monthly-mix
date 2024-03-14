@@ -7,8 +7,6 @@ import ReactPlayer from "react-player";
 import { Spotify } from "react-spotify-embed";
 import { detectSongKind } from "@/lib/detect-song.ts";
 
-import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
-
 export function MusicInfo(): ReactElement {
   const [loading, setLoading] = useState<"info">();
   const [musicUrl, setMusicUrl] = useState("");
