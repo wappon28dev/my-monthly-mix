@@ -5,26 +5,16 @@ import { HStack, VStack, styled as p } from "panda/jsx";
 import { type ReactElement, useState, useMemo, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { Spotify } from "react-spotify-embed";
-import { detectSongKind } from "@/lib/detect-song.ts";
-import { useSongData } from "@/hooks/useSongData";
+import { inferSongInfo, useSongData } from "@/hooks/useSongData";
 
 export function SongInfo(): ReactElement {
   const [loading, setLoading] = useState<"info">();
   const [musicUrl, setMusicUrl] = useState("");
   const songData = useSongData();
-  const songKind = useMemo(() => detectSongKind(musicUrl), [musicUrl]);
-
-  useEffect(() => {
-    void (async () => {
-      if (songKind === "youtube") {
-        const data = await songData.fetch(songKind, musicUrl);
-        console.log(data);
-      }
-    })();
-  }, [musicUrl, songData, songKind]);
+  const songInfo = useMemo(() => inferSongInfo(musicUrl), [musicUrl]);
 
   function Preview(): ReactElement {
-    switch (songKind) {
+    switch (songInfoId) {
       case "blank":
         return <p.div>Enter URL to show preview</p.div>;
       case "youtube":
@@ -67,7 +57,7 @@ export function SongInfo(): ReactElement {
               w="100%"
             />
             <p.h3>Song Type</p.h3>
-            <p.code>{songKind}</p.code>
+            <p.code>{songInfo.kind}</p.code>
             <p.h3>Song Info</p.h3>
             <HStack w="100%">
               <p.div>

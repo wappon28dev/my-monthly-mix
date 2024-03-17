@@ -4,8 +4,8 @@ import { type SongData } from "types/res";
 export class Spotify {
   api: SpotifyApi;
   constructor(
-    private readonly clientId: string,
-    private readonly clientSecret: string,
+    readonly clientId: string,
+    readonly clientSecret: string,
   ) {
     this.api = SpotifyApi.withClientCredentials(clientId, clientSecret);
   }
