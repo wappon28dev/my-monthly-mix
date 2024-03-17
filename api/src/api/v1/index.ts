@@ -1,8 +1,9 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { type HonoType } from "lib/consts";
+import { Spotify } from "lib/services/spotify";
 import { Youtube } from "lib/services/youtube";
-import { zSongKind } from "types/res";
+import { type SongData, zSongKind, zSongData } from "types/res";
 import { z } from "zod";
 
 export const v1 = new Hono<HonoType>()
@@ -14,18 +15,39 @@ export const v1 = new Hono<HonoType>()
   })
   .get("/", (ctx) => ctx.text("Hello World!"))
   .get(
-    "/songs/data/:key",
+    "/songs/:songKind/:id",
     zValidator(
       "param",
       z.object({
         songKind: zSongKind,
-        url: z.string(),
+        id: z.string(),
       }),
     ),
     async (ctx) => {
-      const youtube = new Youtube(ctx.env.YOUTUBE_DATA_API_KEY, ctx.req.url);
-      const data = await youtube.getVideoData("Ks-_Mh1QhMc");
+      const { id, songKind } = ctx.req.valid("param");
+      let songData: SongData;
 
-      return ctx.json(data);
+      switch (songKind) {
+        case "youtube": {
+          const youtube = new Youtube(
+            ctx.env.YOUTUBE_DATA_API_KEY,
+            ctx.req.url,
+          );
+          songData = await youtube.getSongData(id);
+          break;
+        }
+        case "spotify": {
+          const spotify = new Spotify(
+            ctx.env.SPOTIFY_CLIENT_ID,
+            ctx.env.SPOTIFY_CLIENT_SECRET,
+          );
+          songData = await spotify.getSongData(id);
+          break;
+        }
+        default:
+          throw new Error("Invalid songKind");
+      }
+
+      return ctx.json(zSongData.parse(songData));
     },
   );

@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { Button, Code, TextInput } from "@mantine/core";
 import { VStack, HStack, styled as p } from "panda/jsx";
 import { type ReactElement, useState, useMemo, useEffect } from "react";

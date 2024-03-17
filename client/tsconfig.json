@@ -1,4 +1,5 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -21,9 +22,16 @@
       "@/*": ["./src/*"],
       "~/*": ["./public/*"],
       "panda/*": ["./panda/*"],
-      "package": ["./package.json"]
+      "package": ["./package.json"],
+      "@api/*": ["../api/src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../api/src/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

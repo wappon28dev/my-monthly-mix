@@ -2,12 +2,13 @@ import { z } from "zod";
 
 export const zSongData = z.object({
   title: z.string(),
-  durationSec: z.number(),
-  thumbnail: z.string(),
-  authors: z.object({
-    composer: z.string(),
-    singer: z.string().optional(),
-    lyricist: z.string().optional(),
+  publishedAt: z.string(),
+  tags: z.array(z.string()),
+  thumbnail: z.string().url(),
+  artists: z.object({
+    composer: z.array(z.string()),
+    singer: z.array(z.string()).optional(),
+    lyricist: z.array(z.string()).optional(),
   }),
 });
 
