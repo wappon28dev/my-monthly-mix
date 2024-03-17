@@ -4,6 +4,7 @@ import { VStack, styled as p } from "panda/jsx";
 import { type ReactElement } from "react";
 import { Button } from "@mantine/core";
 import { Icon } from "@iconify/react";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Page(): ReactElement {
@@ -27,10 +28,9 @@ export default function Page(): ReactElement {
   function CreationButton(): ReactElement {
     return (
       <Button
+        component={Link}
+        href="/mixes"
         leftSection={<Icon icon="mdi:creation" />}
-        onClick={() => {
-          throw new Error("not implemented yet");
-        }}
         size="xl"
         variant="filled"
       >
