@@ -3,11 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "prepare": "panda codegen && npm run generate:sc-types",
+    "prepare": "panda codegen",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "generate:sc-types": "npx -y openapi-typescript https://gist.githubusercontent.com/MikeRalphson/a9eb3040cb611121b568844958564849/raw/d0996b827b9eb2ae4fa946b9aacf02b03dc3d933/openapi.json -o ./src/types/soundcloud-openapi.ts"
+    "start": "next start"
   },
   "dependencies": {
     "@fontsource-variable/m-plus-1": "^5.0.16",
