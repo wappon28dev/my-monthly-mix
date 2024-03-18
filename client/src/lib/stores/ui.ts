@@ -6,7 +6,7 @@ import { type MonthlyDate } from "@/types/monthly";
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const getDraftMix = (monthlyDate: MonthlyDate) =>
   persistentAtom<DraftMix[]>(
-    getLocalStorageKey(`songDataList-${monthlyDate2str(monthlyDate)}`),
+    getLocalStorageKey(`draftMixes-${monthlyDate2str(monthlyDate)}`),
     [],
     {
       encode: JSON.stringify,
