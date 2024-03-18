@@ -11,27 +11,30 @@ export type Database = {
     Tables: {
       mixes: {
         Row: {
-          created_at: string;
-          draft: string;
+          created_at: string | null;
+          description: string | null;
           id: string;
-          songs: string;
-          updated_at: string;
+          song_comments: string[];
+          song_urls: string[];
+          updated_at: string | null;
           user_id: string;
         };
         Insert: {
-          created_at?: string;
-          draft: string;
+          created_at?: string | null;
+          description?: string | null;
           id: string;
-          songs: string;
-          updated_at?: string;
+          song_comments: string[];
+          song_urls: string[];
+          updated_at?: string | null;
           user_id: string;
         };
         Update: {
-          created_at?: string;
-          draft?: string;
+          created_at?: string | null;
+          description?: string | null;
           id?: string;
-          songs?: string;
-          updated_at?: string;
+          song_comments?: string[];
+          song_urls?: string[];
+          updated_at?: string | null;
           user_id?: string;
         };
         Relationships: [

@@ -4,14 +4,22 @@ import { VStack, HStack, styled as p } from "panda/jsx";
 import { type ReactElement, useState, useMemo, useEffect } from "react";
 import { validate } from "uuid";
 import { useAuth } from "@/hooks/useAuth";
-import { type Mix, useMix } from "@/hooks/useMix";
+import { useMix } from "@/hooks/useMix";
+import { type Tables } from "@/types/supabase";
 
 export function UserMixes(): ReactElement {
   const { session, isLogged } = useAuth();
-  const { fetchAll, fetchSingle, add, update } = useMix();
+  const {
+    fetchAll,
+    fetchSingle,
+    add,
+    update,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __convert2mix,
+  } = useMix();
 
   const [data, setData] = useState<unknown>();
-  const [mix, setMix] = useState<Partial<Mix>>({});
+  const [mix, setMix] = useState<Partial<Tables<"mixes">>>({});
   const [loading, setLoading] = useState<
     "fetchAll" | "fetchSingle" | "add" | "update"
   >();
@@ -104,8 +112,9 @@ export function UserMixes(): ReactElement {
               disabled={
                 !(
                   mix?.user_id != null &&
-                  mix?.songs != null &&
-                  mix?.draft != null
+                  mix?.song_urls != null &&
+                  mix?.song_comments != null &&
+                  mix?.description != null
                 )
               }
               fullWidth
@@ -116,8 +125,9 @@ export function UserMixes(): ReactElement {
                   if (
                     !(
                       mix?.user_id != null &&
-                      mix?.songs != null &&
-                      mix?.draft != null
+                      mix?.song_urls != null &&
+                      mix?.song_comments != null &&
+                      mix?.description != null
                     )
                   ) {
                     throw new Error("Invalid Mix");
@@ -125,9 +135,23 @@ export function UserMixes(): ReactElement {
 
                   setLoading("add");
 
+                  const _data: Pick<
+                    Tables<"mixes">,
+                    "song_urls" | "song_comments" | "description"
+                  > = {
+                    song_urls: (mix.song_urls as unknown as string).split(","),
+                    song_comments: (
+                      mix.song_comments as unknown as string
+                    ).split(","),
+                    description: mix.description,
+                  };
+
                   const result = await add(session, {
-                    songs: (mix.songs as unknown as string).split(","),
-                    draft: (mix.draft as unknown as string).split(","),
+                    songs: _data.song_urls.map((url, idx) => ({
+                      url,
+                      comment: _data.song_comments[idx],
+                    })),
+                    description: _data.description,
                   });
                   setMix(result);
                   setLoading(undefined);
@@ -143,8 +167,9 @@ export function UserMixes(): ReactElement {
                   mix?.id != null &&
                   validate(mix?.id ?? "") &&
                   mix?.user_id != null &&
-                  mix?.songs != null &&
-                  mix?.draft != null &&
+                  mix?.song_urls != null &&
+                  mix?.song_comments != null &&
+                  mix?.description != null &&
                   mix?.created_at != null &&
                   mix?.updated_at != null
                 )
@@ -159,22 +184,29 @@ export function UserMixes(): ReactElement {
                       mix?.id != null &&
                       validate(mix?.id ?? "") &&
                       mix?.user_id != null &&
-                      mix?.songs != null &&
-                      mix?.draft != null &&
+                      mix?.song_urls != null &&
+                      mix?.song_comments != null &&
+                      mix?.description != null &&
                       mix?.created_at != null &&
                       mix?.updated_at != null
                     )
                   )
                     throw new Error("Invalid Mix");
                   setLoading("update");
-                  await update(session, {
+
+                  const _data: Tables<"mixes"> = {
                     id: mix.id,
                     user_id: mix.user_id,
+                    song_urls: (mix.song_urls as unknown as string).split(","),
+                    song_comments: (
+                      mix.song_comments as unknown as string
+                    ).split(","),
+                    description: mix.description,
                     created_at: mix.created_at,
                     updated_at: mix.updated_at,
-                    songs: (mix.songs as unknown as string).split(","),
-                    draft: (mix.draft as unknown as string).split(","),
-                  });
+                  };
+
+                  await update(session, __convert2mix(_data));
                   setLoading(undefined);
                 })();
               }}
@@ -199,7 +231,14 @@ export function UserMixes(): ReactElement {
             w="100%"
           />
           {(
-            ["user_id", "songs", "draft", "created_at", "updated_at"] as const
+            [
+              "user_id",
+              "song_urls",
+              "song_comments",
+              "description",
+              "created_at",
+              "updated_at",
+            ] as const
           ).map((key) => (
             <p.div key={key} w="100%">
               <p.code>{key}</p.code>
@@ -216,7 +255,7 @@ export function UserMixes(): ReactElement {
                     [key]: val,
                   }));
                 }}
-                value={mix[key]}
+                value={mix[key] ?? ""}
                 w="100%"
               />
             </p.div>
