@@ -5,6 +5,7 @@ import { VStack, styled as p } from "panda/jsx";
 import { UserInfo } from "./_UserInfo";
 import { UserMixes } from "./_UserMixes";
 import { SongInfo } from "./_SongInfo";
+import { DraftMix } from "./_DraftMix";
 
 export default function Page(): ReactElement {
   return (
@@ -23,6 +24,7 @@ export default function Page(): ReactElement {
         </p.h1>
         <UserInfo />
         <UserMixes />
+        <DraftMix />
         <SongInfo />
       </VStack>
     </p.div>

@@ -1,4 +1,6 @@
 import { type Entries } from "@/types/utils";
+import { siteId } from "./info";
+import { type MonthlyDate } from "@/types/monthly";
 
 export async function waitMs(ms: number): Promise<void> {
   await new Promise((resolve) => {
@@ -26,3 +28,16 @@ export function fromEntries<T extends Record<string, unknown>>(
 ): T {
   return Object.fromEntries(entries) as T;
 }
+
+export const LOCAL_STORAGE_VERSION = "1";
+export function getLocalStorageKey(key: string, trailingColon = false): string {
+  return `${siteId}.v${LOCAL_STORAGE_VERSION}.${key}${trailingColon ? ":" : ""}`;
+}
+
+export const getMonthlyDate = (date: Date): MonthlyDate => ({
+  year: date.getFullYear(),
+  month: date.getMonth() + 1,
+});
+
+export const monthlyDate2str = (date: MonthlyDate): string =>
+  `${date.year}-${date.month.toString().padStart(2, "0")}`;

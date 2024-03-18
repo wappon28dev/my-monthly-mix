@@ -9,19 +9,19 @@ export type SongInfo = {
 
 export const songServices = {
   soundcloud: {
-  name: "soundcloud",
+    name: "soundcloud",
     icon: "mdi:soundcloud",
-      color: "orange",
+    color: "orange",
   },
-spotify:{
-  name: "spotify",
+  spotify: {
+    name: "spotify",
     icon: "mdi:spotify",
-      color: "green",
+    color: "green",
   },
-youtube:{
-  name: "youtube",
+  youtube: {
+    name: "youtube",
     icon: "material-symbols:youtube-music",
-      color: "red",
+    color: "red",
   },
   blank: {
     name: "blank",
@@ -33,11 +33,14 @@ youtube:{
     icon: "mdi:blank",
     color: "gray",
   },
-} as const satisfies Record<SongKind,{
-name: string;
-icon: string;
-color: string;
-}>;
+} as const satisfies Record<
+  SongKind,
+  {
+    name: string;
+    icon: string;
+    color: string;
+  }
+>;
 
 export function inferSongInfo(url: string): SongInfo {
   if (url === "") {
