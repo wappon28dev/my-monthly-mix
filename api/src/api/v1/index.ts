@@ -1,12 +1,14 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { type HonoType } from "lib/consts";
-import { Spotify } from "lib/services/spotify";
-import { Youtube } from "lib/services/youtube";
-import { type SongData, zSongKind, zSongData } from "types/res";
+import { cors } from "hono/cors";
 import { z } from "zod";
+import { type SongData, zSongKind, zSongData } from "@/types/res";
+import { type HonoType } from "@/lib/consts";
+import { Spotify } from "@/lib/services/spotify";
+import { Youtube } from "@/lib/services/youtube";
 
 export const v1 = new Hono<HonoType>()
+  .use("*", cors())
   .use("/*", async (ctx, next) => {
     Object.entries(ctx.env).forEach(([key, value]) => {
       if (value == null) throw new Error(`key: "${key}" is null`);

@@ -1,7 +1,7 @@
 import { HTTPException } from "hono/http-exception";
-import { type SongData } from "types/res";
-import { type ArrayElem } from "types/utils";
-import { type YoutubeVideoList } from "types/youtube";
+import { type SongData } from "@/types/res";
+import { type ArrayElem } from "@/types/utils";
+import { type YoutubeVideoList } from "@/types/youtube";
 
 export class Youtube {
   constructor(
@@ -20,7 +20,6 @@ export class Youtube {
 
     const url = new URL("https://youtube.googleapis.com/youtube/v3/videos");
     url.search = new URLSearchParams(param).toString();
-    console.log(url.toString());
     const res = await fetch(url.toString(), {
       headers: {
         "Content-Type": "application/json",

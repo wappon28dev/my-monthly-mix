@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*", "../api/src/*"],
       "~/*": ["./public/*"],
       "panda/*": ["./panda/*"],
       "package": ["./package.json"],

@@ -57,7 +57,7 @@ export function useSongData() {
 
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!res.ok) throw new Error("Failed to fetch song data");
-    return res.json();
+    return await res.json();
   }
 
   async function fetchSingleMock(): Promise<SongData> {

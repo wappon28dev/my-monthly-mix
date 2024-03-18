@@ -1,5 +1,5 @@
 import { SpotifyApi, type Track } from "@spotify/web-api-ts-sdk";
-import { type SongData } from "types/res";
+import { type SongData } from "@/types/res";
 
 export class Spotify {
   api: SpotifyApi;
