@@ -1,78 +1,73 @@
 "use client";
 
 import { styled as p } from "panda/jsx";
-import { useEffect, useState, type ReactElement } from "react";
-import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useState, type ReactElement, useMemo } from "react";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
   Button,
   Modal,
   FocusTrap,
+  em,
+  Title,
   CopyButton,
   Card,
-  Image,
   ActionIcon,
   Text,
   CloseButton,
   Center,
   TextInput,
-  Grid,
   Divider,
   ScrollArea,
   Badge,
   Group,
   Flex,
 } from "@mantine/core";
-
 import type { SongData } from "@api/types/res";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useSongData } from "../../hooks/useSongData";
+import {
+  inferSongInfo,
+  useSongData,
+  type SongKind,
+  songServices,
+} from "@/hooks/useSongData";
 
-function NotSelectedSong({
+function AdderSong({
   handlerAddSong,
 }: {
   handlerAddSong: (songData: SongData) => void;
 }): ReactElement {
-  const [url, setUrl] = useState<string>();
+  const [songUrl, setSongUrl] = useState<string>("");
+  const { fetchSingle } = useSongData();
+  const songInfo = useMemo(() => inferSongInfo(songUrl), [songUrl]);
 
-  const { fetchSingleMock } = useSongData();
   return (
-    <p.div
-      _hover={{
-        transform: "scale(1.05)",
-      }}
-      transition="all 0.2s ease-in-out"
-    >
-      <Card m={10} maw={800} padding="xs" radius="md" shadow="sm" withBorder>
-        <Grid>
-          <Grid.Col span={4}>
-            <Image
-              mah={100}
-              maw={100}
-              radius="md"
-              src="http://placehold.jp/50x50.png"
-            />
-          </Grid.Col>
-          <Grid.Col span={8}>
-            <TextInput
-              onChange={(event) => {
-                setUrl(event.currentTarget.value);
-              }}
-              placeholder="URL..."
-              value={url ?? ""}
-            />
-            <Button
-              onClick={() => {
-                void (async () => {
-                  handlerAddSong(await fetchSingleMock());
-                })();
-              }}
-            >
-              Add
-            </Button>
-          </Grid.Col>
-        </Grid>
+    <Center>
+      <Card padding="xs" radius="md" shadow="sm" withBorder>
+        <Flex align="center">
+          <TextInput
+            onChange={(event) => {
+              setSongUrl(event.currentTarget.value);
+            }}
+            placeholder="URL..."
+            value={songUrl ?? ""}
+          />
+          <ActionIcon
+            m={10}
+            onClick={() => {
+              if (songUrl === "") return;
+              void (async () => {
+                if (songInfo.id == null) return;
+                handlerAddSong(await fetchSingle(songInfo.kind, songInfo.id));
+                setSongUrl("");
+              })();
+            }}
+            size="md"
+          >
+            <Icon icon="mdi:check" />
+          </ActionIcon>
+        </Flex>
       </Card>
-    </p.div>
+    </Center>
   );
 }
 
@@ -81,83 +76,65 @@ function SelectedSong({
   handlerDeleteSong,
   title,
   thumbnail,
-  composer,
+  artist,
+  kind,
 }: {
   index: number;
   handlerDeleteSong: (key: number) => void;
   title: string;
   thumbnail: string;
-  composer: string;
+  artist: string;
+  kind: SongKind;
 }): ReactElement {
-  const musicService = [
-    {
-      name: "SoundCloud",
-      icon: "mdi:soundcloud",
-      color: "orange",
-    },
-    {
-      name: "Spotify",
-      icon: "mdi:spotify",
-      color: "green",
-    },
-    {
-      name: "Youtube Music",
-      icon: "material-symbols:youtube-music",
-      color: "red",
-    },
-    // {
-    //   name: "Apple Music",
-    //   color: "pink",
-    // },
-    // {
-    //   name: "Amazon Music",
-    //   color: "blue",
-    // },
-  ];
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`) ?? false;
   return (
     <p.div
       _hover={{
         transform: "scale(1.05)",
       }}
+      mx={isMobile ? 0 : 10}
       transition="all 0.2s ease-in-out"
     >
-      <Card m={10} maw={1000} padding="xs" radius="md" shadow="sm" withBorder>
-        <Grid>
-          <Grid.Col span={11}>
-            <Grid>
-              <Grid.Col span={3}>
-                <Image
-                  mah={100}
-                  maw={100}
-                  radius="md"
-                  src={thumbnail ?? "http://placehold.jp/50x50.png"}
-                />
-              </Grid.Col>
-              <Grid.Col span={9}>
-                <Grid my={3}>
-                  <Grid.Col span={8}>
-                    <Text fw={800}>{title} </Text>
-                  </Grid.Col>
-                  <Grid.Col span={4}>
-                    {/* サービスごとに色変えたい */}
-                    <Badge>音楽サービス名</Badge>
-                  </Grid.Col>
-                </Grid>
-                <Text fw={500} my={7} size="sm">
-                  {composer}
-                </Text>
-                <TextInput placeholder="comment" />
-              </Grid.Col>
-            </Grid>
-          </Grid.Col>
-          <Grid.Col span={1}>
-            <CloseButton
-              onClick={() => {
-                handlerDeleteSong(index);
-              }}
+      <Card m={10} maw={800} padding="xs" radius="md" shadow="sm" withBorder>
+        <Flex direction="row">
+          <Flex align="center" direction={isMobile ? "column" : "row"} gap="md">
+            <p.img
+              alt=""
+              height={isMobile ? 300 : 145}
+              objectFit="cover"
+              rounded="md"
+              src={thumbnail ?? "http://placehold.jp/50x50.png"}
+              width={isMobile ? 300 : 145}
             />
-          </Grid.Col>
-        </Grid>
+            <p.div>
+              <Flex direction="column" gap="xs" mt={isMobile ? 0 : 3}>
+                <Badge color={songServices[kind].color}>
+                  <Flex align="center" justify="flex-start" m={5}>
+                    <Icon
+                      height={50}
+                      icon={songServices[kind].icon}
+                      width={50}
+                    />
+                    {songServices[kind].name}
+                  </Flex>
+                </Badge>
+                <Title lineClamp={2} order={5} w={260}>
+                  {title}
+                </Title>
+              </Flex>
+              <Text fw={500} my={7} size="sm">
+                {artist}
+              </Text>
+              <TextInput placeholder="comment" />
+            </p.div>
+          </Flex>
+          <CloseButton
+            ml={10}
+            onClick={() => {
+              handlerDeleteSong(index);
+            }}
+          />
+        </Flex>
       </Card>
     </p.div>
   );
@@ -210,6 +187,7 @@ function ShareModal(): ReactElement {
 }
 
 export default function Page(): ReactElement {
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`) ?? false;
   const [share, setShare] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
   const [mix, setMix] = useState<SongData[]>([]);
@@ -247,14 +225,15 @@ export default function Page(): ReactElement {
           {mix.map((songData, i) => (
             /* eslint-disable */
             <SelectedSong
-              composer={songData.artists.composer.join(", ")}
+              artist={songData.artists.composer.join(", ")}
               handlerDeleteSong={handlerDeleteSong}
               thumbnail={songData.thumbnail}
               index={i}
+              kind={songData.details.kind}
               title={songData.title}
             />
           ))}
-          <NotSelectedSong handlerAddSong={handlerAddSong} />
+          <AdderSong handlerAddSong={handlerAddSong} />
         </ScrollArea.Autosize>
       </Center>
       <p.div position="fixed" bottom="0" mb={5} w="full">
@@ -262,8 +241,6 @@ export default function Page(): ReactElement {
         <Center>
           <Flex align="end">
             <Button
-              fullWidth
-              maw={300}
               loading={share}
               data-disabled={mix.length !== 3 || share === true}
               onClick={() => {
