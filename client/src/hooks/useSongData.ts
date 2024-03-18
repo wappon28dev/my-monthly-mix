@@ -69,6 +69,10 @@ export function useSongData() {
       artists: {
         composer: ["Rick Astley"],
       },
+      details: {
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        kind: "youtube",
+      },
     };
   }
 

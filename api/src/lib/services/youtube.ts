@@ -47,6 +47,10 @@ export class Youtube {
       artists: {
         composer: [snippet.channelTitle],
       },
+      details: {
+        url: `https://www.youtube.com/watch?v=${id}`,
+        kind: "youtube",
+      },
     };
   }
 }

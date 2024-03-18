@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const zSongKind = z.union([
+  z.literal("youtube"),
+  z.literal("spotify"),
+  z.literal("soundcloud"),
+]);
+
 export const zSongData = z.object({
   title: z.string(),
   publishedAt: z.string(),
@@ -10,12 +16,10 @@ export const zSongData = z.object({
     singer: z.array(z.string()).optional(),
     lyricist: z.array(z.string()).optional(),
   }),
+  details: z.object({
+    url: z.string().url(),
+    kind: zSongKind,
+  }),
 });
 
 export type SongData = z.infer<typeof zSongData>;
-
-export const zSongKind = z.union([
-  z.literal("youtube"),
-  z.literal("spotify"),
-  z.literal("soundcloud"),
-]);

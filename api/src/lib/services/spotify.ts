@@ -28,6 +28,10 @@ export class Spotify {
         composer: album.artists.map((artist) => artist.name),
         singer: artists.map((artist) => artist.name),
       },
+      details: {
+        url: `https://open.spotify.com/track/${id}`,
+        kind: "spotify",
+      },
     };
   }
 }
