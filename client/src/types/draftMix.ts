@@ -1,9 +1,8 @@
 import { type SongData } from "@/types/res";
 
-export type DraftMix = {
+export type DraftMix = Array<{
   userInput: {
-    url: string;
     comment: string;
   };
-  songData?: SongData;
-};
+  songData: SongData;
+}>;

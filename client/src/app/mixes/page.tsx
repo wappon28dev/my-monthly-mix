@@ -1,7 +1,7 @@
 "use client";
 
 import { styled as p } from "panda/jsx";
-import { useEffect, useState, type ReactElement, useMemo } from "react";
+import { useState, type ReactElement, useMemo } from "react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
   Button,
@@ -30,6 +30,8 @@ import {
   type SongKind,
   songServices,
 } from "@/hooks/useSongData";
+import { useDraftMix } from "@/hooks/useDraftMix";
+import { getMonthlyDate } from "@/lib/utils";
 
 function AdderSong({
   handlerAddSong,
@@ -74,16 +76,20 @@ function AdderSong({
 function SelectedSong({
   index,
   handlerDeleteSong,
+  handlerChangeComment,
   title,
   thumbnail,
-  artist,
+  artists,
   kind,
+  comment,
 }: {
   index: number;
   handlerDeleteSong: (key: number) => void;
+  handlerChangeComment: (key: number, comment: string) => void;
   title: string;
   thumbnail: string;
-  artist: string;
+  artists: string;
+  comment: string;
   kind: SongKind;
 }): ReactElement {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`) ?? false;
@@ -123,9 +129,15 @@ function SelectedSong({
                 </Title>
               </Flex>
               <Text fw={500} my={7} size="sm">
-                {artist}
+                {artists}
               </Text>
-              <TextInput placeholder="comment" />
+              <TextInput
+                onChange={(event) => {
+                  handlerChangeComment(index, event.currentTarget.value);
+                }}
+                placeholder="comment"
+                value={comment}
+              />
             </p.div>
           </Flex>
           <CloseButton
@@ -187,30 +199,53 @@ function ShareModal(): ReactElement {
 }
 
 export default function Page(): ReactElement {
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`) ?? false;
   const [share, setShare] = useState<boolean>(false);
-  const [msg, setMsg] = useState<string>("");
-  const [mix, setMix] = useState<SongData[]>([]);
+  const { $draftMix, draftMix } = useDraftMix(getMonthlyDate(new Date()));
 
   // ButtonMsgの変更
-  useEffect(() => {
-    if (mix.length === 3) {
-      setMsg("Share");
-    } else if (mix.length < 3) {
-      setMsg("Select 3 songs");
-    } else {
-      setMsg("Delete a song to share");
+  const msg = useMemo(() => {
+    if (draftMix.length === 3) {
+      return "Share";
     }
-  }, [mix]);
+    if (draftMix.length < 3) {
+      return "Select 3 songs";
+    }
+    return "Delete a song to share";
+  }, [draftMix]);
 
   // 曲追加Handler
   const handlerAddSong = (newSong: SongData): void => {
-    setMix([...mix, newSong]);
+    $draftMix.set([
+      ...draftMix,
+      {
+        userInput: {
+          comment: "",
+        },
+        songData: newSong,
+      },
+    ]);
   };
 
   // 曲削除Handler
   const handlerDeleteSong = (key: number): void => {
-    setMix(mix.filter((_, j) => j !== key));
+    $draftMix.set(draftMix.filter((_, j) => j !== key));
+  };
+
+  // 曲Comment変更Handler
+  const handlerChangeComment = (key: number, comment: string): void => {
+    $draftMix.set(
+      draftMix.map((song, j) => {
+        if (j === key) {
+          return {
+            userInput: {
+              comment,
+            },
+            songData: song.songData,
+          };
+        }
+        return song;
+      })
+    );
   };
 
   return (
@@ -222,34 +257,34 @@ export default function Page(): ReactElement {
             maxHeight: "calc(100vh - 200px)",
           }}
         >
-          {mix.map((songData, i) => (
-            /* eslint-disable */
+          {draftMix.map((song, i) => (
+            /* eslint-disable-next-line react/jsx-key */
             <SelectedSong
-              artist={songData.artists.composer.join(", ")}
+              artists={song.songData.artists.composer.join(", ")}
+              comment={song.userInput.comment}
+              handlerChangeComment={handlerChangeComment}
               handlerDeleteSong={handlerDeleteSong}
-              thumbnail={songData.thumbnail}
               index={i}
-              kind={songData.details.kind}
-              title={songData.title}
+              kind={song.songData.details.kind}
+              thumbnail={song.songData.thumbnail}
+              title={song.songData.title}
             />
           ))}
           <AdderSong handlerAddSong={handlerAddSong} />
         </ScrollArea.Autosize>
       </Center>
-      <p.div position="fixed" bottom="0" mb={5} w="full">
+      <p.div bottom="0" mb={5} position="fixed" w="full">
         <Divider my="md" />
         <Center>
           <Flex align="end">
             <Button
+              data-disabled={draftMix.length !== 3 || share}
               loading={share}
-              data-disabled={mix.length !== 3 || share === true}
               onClick={() => {
-                if (mix.length !== 3) return;
-                console.log(mix);
+                if (draftMix.length !== 3) return;
                 setShare(true);
                 setTimeout(() => {
                   setShare(false);
-                  setMsg("next post is XXXX/XX/XX");
                 }, 2000);
               }}
               size="xl"
