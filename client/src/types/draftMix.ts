@@ -1,8 +1,12 @@
-import { type SongData } from "@/types/res";
+import { z } from "zod";
+import { zSongData } from "@/types/res";
 
-export type DraftMix = Array<{
-  userInput: {
-    comment: string;
-  };
-  songData: SongData;
-}>;
+export const zDraftMix = z.array(
+  z.object({
+    userInput: z.object({
+      comment: z.string(),
+    }),
+    songData: zSongData,
+  }),
+);
+export type DraftMix = z.infer<typeof zDraftMix>;
