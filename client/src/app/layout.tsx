@@ -1,8 +1,10 @@
 import { type ReactElement } from "react";
 import { styled as p } from "panda/jsx";
 import { MantineProvider, createTheme } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import { siteName, description, url } from "@/lib/info";
 
+import "@mantine/notifications/styles.css";
 import "@mantine/core/styles.css";
 import "@fontsource-variable/m-plus-1";
 import "./global.css";
@@ -63,6 +65,7 @@ export default function RootLayout({
         w="100%"
       >
         <MantineProvider defaultColorScheme="dark" theme={theme}>
+          <Notifications />
           <Header />
           <p.main h="100%" w="100%">
             {children}
