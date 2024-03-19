@@ -4,21 +4,21 @@ import { styled as p } from "panda/jsx";
 import { useState, type ReactElement, useMemo } from "react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
+  ActionIcon,
   Button,
-  Modal,
-  FocusTrap,
-  em,
-  Title,
+  Badge,
   CopyButton,
   Card,
-  ActionIcon,
-  Text,
   CloseButton,
   Center,
-  TextInput,
   Divider,
+  em,
+  FocusTrap,
+  Modal,
+  Title,
+  Text,
+  TextInput,
   ScrollArea,
-  Badge,
   Group,
   Flex,
 } from "@mantine/core";
@@ -30,6 +30,8 @@ import {
   type SongKind,
   songServices,
 } from "@/hooks/useSongData";
+import { useMix } from "@/hooks/useMix";
+import { useAuth } from "@/hooks/useAuth";
 import { useDraftMix } from "@/hooks/useDraftMix";
 import { getMonthlyDate } from "@/lib/utils";
 
@@ -199,19 +201,22 @@ function ShareModal(): ReactElement {
 }
 
 export default function Page(): ReactElement {
-  const [share, setShare] = useState<boolean>(false);
+  const [IsShare, setIsShare] = useState<boolean>(false);
   const { $draftMix, draftMix } = useDraftMix(getMonthlyDate(new Date()));
+  const { session } = useAuth();
+  const { add } = useMix();
 
   // ButtonMsgの変更
-  const msg = useMemo(() => {
-    if (draftMix.length === 3) {
-      return "Share";
-    }
-    if (draftMix.length < 3) {
-      return "Select 3 songs";
-    }
-    return "Delete a song to share";
-  }, [draftMix]);
+  const msg =
+    useMemo(() => {
+      if (draftMix.length === 3) {
+        return "Share";
+      }
+      if (draftMix.length < 3) {
+        return "Select 3 songs";
+      }
+      return "Delete a song to share";
+    }, [draftMix]) ?? "";
 
   // 曲追加Handler
   const handlerAddSong = (newSong: SongData): void => {
@@ -278,14 +283,22 @@ export default function Page(): ReactElement {
         <Center>
           <Flex align="end">
             <Button
-              data-disabled={draftMix.length !== 3 || share}
-              loading={share}
+              data-disabled={draftMix.length !== 3 || IsShare}
+              loading={IsShare}
               onClick={() => {
                 if (draftMix.length !== 3) return;
-                setShare(true);
-                setTimeout(() => {
-                  setShare(false);
-                }, 2000);
+                // setShare(true);
+                //   setShare(false);
+                void (async () => {
+                  if (session == null) return;
+                  await add(session, {
+                    description: "test",
+                    songs: draftMix.map((song) => ({
+                      comment: song.userInput.comment,
+                      url: song.songData.details.url,
+                    })),
+                  });
+                })();
               }}
               size="xl"
             >
