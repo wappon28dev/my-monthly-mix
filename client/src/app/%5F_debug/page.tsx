@@ -23,11 +23,11 @@ export default function Page(): ReactElement {
         <p.h1 fontSize="3xl" fontWeight="bold">
           Debug Mode
         </p.h1>
-        {/* <UserInfo /> */}
+        <UserInfo />
         <UserMixes />
-        {/* <DraftMix />
+        <DraftMix />
         <SongInfo />
-        <FetchUserMix /> */}
+        <FetchUserMix />
       </VStack>
     </p.div>
   );
