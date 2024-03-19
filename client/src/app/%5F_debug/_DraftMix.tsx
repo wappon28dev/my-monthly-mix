@@ -1,7 +1,7 @@
 "use client";
 
 import { HStack, VStack, styled as p } from "panda/jsx";
-import { type ReactElement, useEffect, useState } from "react";
+import { type ReactElement,  useState } from "react";
 import { Code, NumberInput } from "@mantine/core";
 import { useDraftMix } from "@/hooks/useDraftMix";
 import {
@@ -15,9 +15,6 @@ export function DraftMix(): ReactElement {
     getMonthlyDate(new Date()),
   );
   const { draftMix } = useDraftMix(selectedMonthlyDate);
-
-  useEffect(() => {}, []);
-
   return (
     <VStack
       alignItems="start"

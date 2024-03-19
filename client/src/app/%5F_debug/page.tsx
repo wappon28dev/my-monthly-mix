@@ -6,6 +6,7 @@ import { UserInfo } from "./_UserInfo";
 import { UserMixes } from "./_UserMixes";
 import { SongInfo } from "./_SongInfo";
 import { DraftMix } from "./_DraftMix";
+import { FetchUserMix } from "./_FetchUserMix";
 
 export default function Page(): ReactElement {
   return (
@@ -22,10 +23,11 @@ export default function Page(): ReactElement {
         <p.h1 fontSize="3xl" fontWeight="bold">
           Debug Mode
         </p.h1>
-        <UserInfo />
+        {/* <UserInfo /> */}
         <UserMixes />
-        <DraftMix />
+        {/* <DraftMix />
         <SongInfo />
+        <FetchUserMix /> */}
       </VStack>
     </p.div>
   );

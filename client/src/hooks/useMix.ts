@@ -5,6 +5,7 @@ import { v4 as uuidV4 } from "uuid";
 import supabase from "@/lib/service/supabase";
 import { type Tables } from "@/types/supabase";
 import { type OmitStrict } from "@/types/utils";
+import { type MonthlyDate } from "@/types/monthly";
 
 export type Mix = OmitStrict<Tables<"mixes">, "song_urls" | "song_comments"> & {
   songs: Array<{
@@ -16,8 +17,9 @@ export type Mix = OmitStrict<Tables<"mixes">, "song_urls" | "song_comments"> & {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useMix() {
   function convert2mix(data: Tables<"mixes">): Mix {
+    const { song_urls, song_comments, ...rest } = data;
     return {
-      ...data,
+      ...rest,
       songs: data.song_urls.map((url, idx) => ({
         url,
         comment: data.song_comments[idx],
@@ -26,8 +28,9 @@ export function useMix() {
   }
 
   function convert2dbSchema(mix: Mix): Tables<"mixes"> {
+    const { songs, ...data } = mix;
     return {
-      ...mix,
+      ...data,
       song_urls: mix.songs.map((song) => song.url),
       song_comments: mix.songs.map((song) => song.comment),
     };
@@ -88,6 +91,8 @@ export function useMix() {
   async function update(session: Session, mix: Mix): Promise<void> {
     const data = convert2dbSchema(mix);
 
+    console.log(data);
+
     const result = await supabase
       .from("mixes")
       .update(data)
@@ -97,6 +102,32 @@ export function useMix() {
     console.log(result);
   }
 
+  async function fetchSingleByUserId(
+    user_id: string,
+    monthlyDate: MonthlyDate,
+  ): Promise<Mix> {
+    const { year, month } = monthlyDate;
+    const dateStart = new Date(year, month, 0);
+    dateStart.setDate(1);
+    const dateEnd = new Date(year, month, 0);
+
+    const { data, error } = await supabase
+      .from("mixes")
+      .select("*")
+      .eq("user_id", user_id)
+      .gt("created_at", dateStart.toISOString())
+      .lt("created_at", dateEnd.toISOString())
+      .single();
+
+    if (data == null) {
+      throw new Error("Failed to fetch mix", {
+        cause: error,
+      });
+    }
+
+    return convert2mix(data);
+  }
+
   return {
     __convert2mix: convert2mix,
     __convert2dbSchema: convert2dbSchema,
@@ -104,5 +135,6 @@ export function useMix() {
     fetchSingle,
     add,
     update,
+    fetchSingleByUserId,
   };
 }

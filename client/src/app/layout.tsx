@@ -55,7 +55,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): ReactElement {
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning>
       <p.body
         display="grid"
         gridTemplateColumns="100%"

@@ -6,8 +6,8 @@ import { type ReactElement, useState, useMemo, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { Spotify } from "react-spotify-embed";
 import { type SongData } from "@api/types/res";
-import { Icon } from "@iconify/react";
 import { inferSongInfo, useSongData } from "@/hooks/useSongData";
+import { SongDataPreview } from "@/components/SongDataPreview";
 
 export function SongInfo(): ReactElement {
   const [loading, setLoading] = useState<"data">();
@@ -91,47 +91,7 @@ export function SongInfo(): ReactElement {
               </p.div>
             </HStack>
             <p.h3>Song Info</p.h3>
-            <HStack w="100%">
-              <p.div>
-                {songData?.thumbnail == null ? (
-                  <p.div
-                    bg="gray.300"
-                    border="1px solid white"
-                    display="grid"
-                    height={120}
-                    placeItems="center"
-                    rounded="lg"
-                    width={120}
-                  >
-                    <Icon color="gray" height={40} icon="mdi:image" />
-                  </p.div>
-                ) : (
-                  <p.img
-                    alt=""
-                    height={120}
-                    objectFit="cover"
-                    rounded="lg"
-                    src={songData.thumbnail}
-                    width={120}
-                  />
-                )}
-              </p.div>
-
-              <VStack alignItems="start">
-                <HStack>
-                  <Icon height={25} icon="mdi:music-note" />
-                  {songData?.title ?? "Title"}
-                </HStack>
-                <HStack>
-                  <Icon height={25} icon="mdi:account-music" />
-                  {songData?.artists.composer ?? "Composer"}
-                </HStack>
-                <HStack>
-                  <Icon height={25} icon="mdi:bookmark-music" />
-                  {songData?.tags.join(", ") ?? "Tags"}
-                </HStack>
-              </VStack>
-            </HStack>
+            <SongDataPreview songData={songData} />
             <p.h3>Song Data</p.h3>
             <p.div overflowX="auto" w="100%">
               <Code block h="auto" style={{ height: "100%" }}>
