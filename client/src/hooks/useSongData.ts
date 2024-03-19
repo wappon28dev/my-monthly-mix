@@ -9,27 +9,27 @@ export type SongInfo = {
 
 export const songServices = {
   soundcloud: {
-    name: "soundcloud",
+    name: "SoundCloud",
     icon: "mdi:soundcloud",
     color: "orange",
   },
   spotify: {
-    name: "spotify",
+    name: "Spotify",
     icon: "mdi:spotify",
     color: "green",
   },
   youtube: {
-    name: "youtube",
+    name: "YouTube",
     icon: "material-symbols:youtube-music",
     color: "red",
   },
   blank: {
-    name: "blank",
+    name: "",
     icon: "mdi:blank",
     color: "gray",
   },
   other: {
-    name: "other",
+    name: "",
     icon: "mdi:blank",
     color: "gray",
   },
