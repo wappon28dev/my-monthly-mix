@@ -7,10 +7,52 @@ import { notFound } from "next/navigation";
 import { Button, Progress, Skeleton } from "@mantine/core";
 import { css } from "panda/css";
 import { Icon } from "@iconify/react";
+import ReactPlayer from "react-player";
+import { Spotify } from "react-spotify-embed";
 import { useMix, type Mix } from "@/hooks/useMix";
 import { type ArrayElem } from "@/types/utils";
 import { type SongData } from "@/types/res";
-import { inferSongInfo, songServices, useSongData } from "@/hooks/useSongData";
+import {
+  inferSongInfo,
+  type SongKind,
+  songServices,
+  useSongData,
+} from "@/hooks/useSongData";
+
+function Preview({
+  songUrl,
+  songKind,
+}: {
+  songUrl: string;
+  songKind: SongKind;
+}): ReactElement {
+  switch (songKind) {
+    case "blank":
+      return <p.div>Enter URL to show preview</p.div>;
+    case "youtube":
+    case "soundcloud":
+      return (
+        <ReactPlayer
+          controls
+          height={300}
+          style={{ borderRadius: "var(--radii-3xl)" }}
+          url={songUrl}
+          width={300}
+        />
+      );
+    case "spotify":
+      return (
+        <Spotify
+          height={300}
+          link={songUrl}
+          style={{ borderRadius: "var(--radii-3xl)" }}
+          width={300}
+        />
+      );
+    default:
+      return <p.div>Currently not supported</p.div>;
+  }
+}
 
 type Params = {
   userId: string;
@@ -41,6 +83,7 @@ export function Song({
 }): ReactElement {
   const needShow = songData == null;
   const service = songServices[songData?.details.kind ?? "blank"];
+  const [needShowEmbed, setNeedShowEmbed] = useState<boolean>(false);
 
   return (
     <VStack>
@@ -49,10 +92,38 @@ export function Song({
           <p.img
             h={300}
             objectFit="cover"
+            onClick={() => {
+              setNeedShowEmbed(true);
+            }}
             rounded="3xl"
             src={songData?.thumbnail ?? ""}
             w={300}
           />
+          <p.div
+            className={css({
+              "& iframe": {
+                borderRadius: "var(--radii-3xl)",
+              }
+            })}
+            h={300}
+            left="50%"
+            position="absolute"
+            rounded="3xl"
+            style={{
+              zIndex: needShowEmbed ? 10 : -1,
+              display: needShowEmbed ? "block" : "none",
+            }}
+            top="50%"
+            transform="translate(-50%, -50%)"
+            w={300}
+          >
+            {songData != null && (
+              <Preview
+                songKind={songData.details.kind}
+                songUrl={songData.details.url}
+              />
+            )}
+          </p.div>
           <p.a
             alignItems="end"
             className={css({
@@ -73,6 +144,7 @@ export function Song({
             }}
             target="_blank"
             top="-5"
+            zIndex="10"
           >
             <p.p
               h="5"
@@ -106,6 +178,13 @@ export function Song({
         <p.p minH="1.5em" minW="200px" textAlign="center">
           {songData?.artists.composer ?? " "}
         </p.p>
+      </Skeleton>
+      <Skeleton visible={needShow}>
+        {comment != null && comment.length !== 0 && (
+          <p.p minH="1.5em" minW="200px" textAlign="center">
+            <p.div>{comment}</p.div>
+          </p.p>
+        )}
       </Skeleton>
       <Skeleton visible={needShow}>
         <p.div textAlign="center" w="100%">

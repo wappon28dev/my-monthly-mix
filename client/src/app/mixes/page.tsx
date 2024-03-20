@@ -1,7 +1,7 @@
 "use client";
 
 import { styled as p } from "panda/jsx";
-import { useState, type ReactElement, useMemo } from "react";
+import { useState, type ReactElement, useMemo, useEffect } from "react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
   ActionIcon,
@@ -33,7 +33,8 @@ import {
 import { useMix } from "@/hooks/useMix";
 import { useAuth } from "@/hooks/useAuth";
 import { useDraftMix } from "@/hooks/useDraftMix";
-import { getMonthlyDate } from "@/lib/utils";
+import { getMonthlyDate, monthlyDate2str } from "@/lib/utils";
+import { type MonthlyDate } from "@/types/monthly";
 
 function AdderSong({
   handlerAddSong,
@@ -154,8 +155,14 @@ function SelectedSong({
   );
 }
 
-function ShareModal(): ReactElement {
+function ShareModal({
+  monthlyDate,
+}: {
+  monthlyDate: MonthlyDate;
+}): ReactElement {
   const [opened, { open, close }] = useDisclosure(false);
+  const { session } = useAuth();
+  const { getShareLink } = useMix();
 
   return (
     <>
@@ -186,11 +193,24 @@ function ShareModal(): ReactElement {
           <Button fullWidth>Mail</Button>
         </Group>
         <Divider my="md" />
-        直接URLをコピー
-        <CopyButton value="このページのURL">
+        このMixのリンクを直接コピー
+        <CopyButton
+          value={
+            session != null
+              ? getShareLink(session, monthlyDate)
+              : "You need to login"
+          }
+        >
           {({ copied, copy }) => (
             <Button color={copied ? "teal" : "blue"} onClick={copy} pl={0}>
-              <TextInput mr={15} placeholder="このページのURL" />
+              <TextInput
+                mr={15}
+                placeholder={
+                  session != null
+                    ? getShareLink(session, monthlyDate)
+                    : "You need to login"
+                }
+              />
               {copied ? "Copied url" : "Copy url"}
             </Button>
           )}
@@ -201,22 +221,33 @@ function ShareModal(): ReactElement {
 }
 
 export default function Page(): ReactElement {
-  const [IsShare, setIsShare] = useState<boolean>(false);
-  const { $draftMix, draftMix } = useDraftMix(getMonthlyDate(new Date()));
+  const nowMonthlyDate = getMonthlyDate(new Date());
+  const { $draftMix, draftMix } = useDraftMix(nowMonthlyDate);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { session } = useAuth();
-  const { add } = useMix();
+  const { add, fetchCanShareMix } = useMix();
+  const [canShareMix, setCanShareMix] = useState(false);
+
+  useEffect(() => {
+    if (session == null) return;
+    void (async () => {
+      setCanShareMix(await fetchCanShareMix(session, nowMonthlyDate));
+    })();
+  }, [session, fetchCanShareMix, nowMonthlyDate]);
 
   // ButtonMsgの変更
-  const msg =
-    useMemo(() => {
-      if (draftMix.length === 3) {
-        return "Share";
-      }
-      if (draftMix.length < 3) {
-        return "Select 3 songs";
-      }
-      return "Delete a song to share";
-    }, [draftMix]) ?? "";
+  const msg = useMemo(() => {
+    if (!canShareMix) {
+      return `You did post ${monthlyDate2str(nowMonthlyDate)}`;
+    }
+    if (draftMix.length === 3) {
+      return "Share";
+    }
+    if (draftMix.length < 3) {
+      return "Select 3 songs";
+    }
+    return "Delete a song to share";
+  }, [draftMix, canShareMix, nowMonthlyDate]);
 
   // 曲追加Handler
   const handlerAddSong = (newSong: SongData): void => {
@@ -263,8 +294,9 @@ export default function Page(): ReactElement {
           }}
         >
           {draftMix.map((song, i) => (
-            /* eslint-disable-next-line react/jsx-key */
             <SelectedSong
+              // eslint-disable-next-line react/no-array-index-key
+              key={i}
               artists={song.songData.artists.composer.join(", ")}
               comment={song.userInput.comment}
               handlerChangeComment={handlerChangeComment}
@@ -283,12 +315,12 @@ export default function Page(): ReactElement {
         <Center>
           <Flex align="end">
             <Button
-              data-disabled={draftMix.length !== 3 || IsShare}
-              loading={IsShare}
+              disabled={draftMix.length !== 3 || !canShareMix}
+              loading={isLoading}
               onClick={() => {
+                setCanShareMix(false);
+                setIsLoading(true);
                 if (draftMix.length !== 3) return;
-                // setShare(true);
-                //   setShare(false);
                 void (async () => {
                   if (session == null) return;
                   await add(session, {
@@ -297,6 +329,8 @@ export default function Page(): ReactElement {
                       comment: song.userInput.comment,
                       url: song.songData.details.url,
                     })),
+                  }).finally(() => {
+                    setIsLoading(false);
                   });
                 })();
               }}
@@ -304,7 +338,7 @@ export default function Page(): ReactElement {
             >
               {msg}
             </Button>
-            <ShareModal />
+            <ShareModal monthlyDate={nowMonthlyDate} />
           </Flex>
         </Center>
       </p.div>

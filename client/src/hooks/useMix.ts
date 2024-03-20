@@ -79,7 +79,6 @@ export function useMix() {
     mix: Pick<Mix, "songs" | "description">,
   ): Promise<Mix> {
     const date = new Date();
-
     const uuid = uuidV4();
     const data = {
       id: uuid,
@@ -89,7 +88,8 @@ export function useMix() {
       ...mix,
     };
 
-    if (!(await canShareMix(session, getMonthlyDate(date)))) {
+    if (mix.songs.length !== 3) throw new Error("You must select 3 songs.");
+    if (!(await fetchCanShareMix(session, getMonthlyDate(date)))) {
       throw new Error("You already shared a mix this month.");
     }
 
@@ -145,7 +145,7 @@ export function useMix() {
     return `http://localhost:3000/mixes/${userId}/${monthlyStr.replace("-", "/")}`;
   }
 
-  async function canShareMix(
+  async function fetchCanShareMix(
     session: Session,
     monthlyDate: MonthlyDate,
   ): Promise<boolean> {
@@ -176,6 +176,6 @@ export function useMix() {
     update,
     fetchSingleByUserId,
     getShareLink,
-    canShareMix,
+    fetchCanShareMix,
   };
 }
