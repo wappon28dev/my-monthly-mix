@@ -39,5 +39,16 @@ export const getMonthlyDate = (date: Date): MonthlyDate => ({
   month: date.getMonth() + 1,
 });
 
-export const monthlyDate2str = (date: MonthlyDate): string =>
-  `${date.year}-${date.month.toString().padStart(2, "0")}`;
+export const monthlyDate2str = (monthlyDate: MonthlyDate): string =>
+  `${monthlyDate.year}-${monthlyDate.month.toString().padStart(2, "0")}`;
+
+export const monthlyDate2DateRange = (
+  monthlyDate: MonthlyDate,
+): [Date, Date] => {
+  const { year, month } = monthlyDate;
+  const dateStart = new Date(year, month, 0);
+  dateStart.setDate(1);
+  const dateEnd = new Date(year, month, 0);
+
+  return [dateStart, dateEnd];
+};
