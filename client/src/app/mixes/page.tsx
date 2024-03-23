@@ -280,7 +280,7 @@ export default function Page(): ReactElement {
           };
         }
         return song;
-      })
+      }),
     );
   };
 

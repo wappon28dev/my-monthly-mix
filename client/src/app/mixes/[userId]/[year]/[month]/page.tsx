@@ -22,9 +22,11 @@ import {
 function Preview({
   songUrl,
   songKind,
+  isPlaying,
 }: {
   songUrl: string;
   songKind: SongKind;
+  isPlaying: boolean;
 }): ReactElement {
   switch (songKind) {
     case "blank":
@@ -35,6 +37,7 @@ function Preview({
         <ReactPlayer
           controls
           height={300}
+          playing={isPlaying}
           style={{ borderRadius: "var(--radii-3xl)" }}
           url={songUrl}
           width={300}
@@ -43,9 +46,15 @@ function Preview({
     case "spotify":
       return (
         <Spotify
-          height={300}
+          frameBorder="0"
+          height={352}
           link={songUrl}
-          style={{ borderRadius: "var(--radii-3xl)" }}
+          play={isPlaying}
+          style={{
+            overflow: "hidden",
+            transform: "translateY(-50px)",
+            clipPath: "polygon(0 12.5%, 100% 12.5%, 100% 100%, 0% 100%)",
+          }}
           width={300}
         />
       );
@@ -74,7 +83,7 @@ function validateParams({ userId, year, month }: Params): void | never {
   }
 }
 
-export function Song({
+function Song({
   songData,
   comment,
 }: {
@@ -83,80 +92,143 @@ export function Song({
 }): ReactElement {
   const needShow = songData == null;
   const service = songServices[songData?.details.kind ?? "blank"];
-  const [needShowEmbed, setNeedShowEmbed] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  function PlayButton(): ReactElement {
+    return (
+      <p.div
+        className="play-button"
+        left="50%"
+        opacity="0"
+        position="absolute"
+        top="50%"
+        transform="translate(-50%, -50%)"
+        transition="opacity 0.2s ease-out"
+        zIndex="10"
+      >
+        <Icon height={60} icon="mdi:play" width={60} />
+      </p.div>
+    );
+  }
+
+  function Overlay(): ReactElement {
+    return (
+      <p.div
+        className="overlay"
+        cursor="pointer"
+        h="100%"
+        left="50%"
+        onClick={() => {
+          setIsPlaying(true);
+        }}
+        position="absolute"
+        rounded="3xl"
+        top="50%"
+        transform="translate(-50%, -50%)"
+        transition="background-color 0.2s ease-out"
+        w="100%"
+        zIndex="5"
+      />
+    );
+  }
+
+  function EmbedPreview(): ReactElement {
+    return (
+      <p.div
+        className={css({
+          "& iframe": {
+            borderRadius: "var(--radii-3xl)",
+            "& body": {
+              backgroundColor: "transparent",
+            },
+          },
+        })}
+        h={300}
+        left="50%"
+        position="absolute"
+        rounded="3xl"
+        style={{
+          zIndex: isPlaying ? 10 : -1,
+          display: isPlaying ? "block" : "none",
+        }}
+        top="50%"
+        transform="translate(-50%, -50%)"
+        w={300}
+      >
+        {songData != null && (
+          <Preview
+            isPlaying={isPlaying}
+            songKind={songData.details.kind}
+            songUrl={songData.details.url}
+          />
+        )}
+      </p.div>
+    );
+  }
+
+  function Chips(): ReactElement {
+    return (
+      <p.a
+        alignItems="end"
+        className={css({
+          _hover: {
+            "& > p": { w: "80px" },
+          },
+        })}
+        cursor="pointer"
+        display="flex"
+        href={songData?.details.url ?? "#"}
+        justifyContent="center"
+        p="2"
+        position="absolute"
+        right="-5"
+        rounded="full"
+        style={{
+          backgroundColor: service.color,
+        }}
+        target="_blank"
+        top="-5"
+        zIndex="10"
+      >
+        <p.p
+          h="5"
+          overflow="hidden"
+          transform="translateY(-6px) translateX(12px)"
+          transition="width 0.2s ease-out"
+          w="0"
+        >
+          {service.name}
+        </p.p>
+        <Icon height={30} icon={service.icon} width={30} />
+      </p.a>
+    );
+  }
 
   return (
     <VStack>
       <Skeleton visible={needShow}>
-        <p.div position="relative">
+        <p.div
+          _hover={{
+            "& .overlay": {
+              bg: "rgba(0, 0, 0, 0.4)",
+            },
+            "& .play-button": {
+              opacity: 1,
+            },
+          }}
+          position="relative"
+        >
           <p.img
             h={300}
             objectFit="cover"
-            onClick={() => {
-              setNeedShowEmbed(true);
-            }}
             rounded="3xl"
             src={songData?.thumbnail ?? ""}
             w={300}
           />
-          <p.div
-            className={css({
-              "& iframe": {
-                borderRadius: "var(--radii-3xl)",
-              }
-            })}
-            h={300}
-            left="50%"
-            position="absolute"
-            rounded="3xl"
-            style={{
-              zIndex: needShowEmbed ? 10 : -1,
-              display: needShowEmbed ? "block" : "none",
-            }}
-            top="50%"
-            transform="translate(-50%, -50%)"
-            w={300}
-          >
-            {songData != null && (
-              <Preview
-                songKind={songData.details.kind}
-                songUrl={songData.details.url}
-              />
-            )}
-          </p.div>
-          <p.a
-            alignItems="end"
-            className={css({
-              _hover: {
-                "& > p": { w: "80px" },
-              },
-            })}
-            cursor="pointer"
-            display="flex"
-            href={songData?.details.url ?? "#"}
-            justifyContent="center"
-            p="2"
-            position="absolute"
-            right="-5"
-            rounded="full"
-            style={{
-              backgroundColor: service.color,
-            }}
-            target="_blank"
-            top="-5"
-            zIndex="10"
-          >
-            <p.p
-              h="5"
-              overflow="hidden"
-              transform="translateY(-6px) translateX(12px)"
-              transition="width 0.2s ease-out"
-              w="0"
-            >
-              {service.name}
-            </p.p>
-            <Icon height={30} icon={service.icon} width={30} />
-          </p.a>
+          <PlayButton />
+          <Overlay />
+          <EmbedPreview />
+          <Chips />
         </p.div>
       </Skeleton>
       <Skeleton visible={needShow}>
